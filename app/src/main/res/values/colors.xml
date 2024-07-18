@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="colorPrimary">#004A72</color>
+    <color name="colorPrimaryDark">#004581</color>
+    <color name="colorAccent">#003E68</color>
+    <color name="windowBackground">#222222</color>
+    <color name="colorButtonNormal">#FDFDFD</color>
+    <color name="textColorPrimary">#FFFFFB</color>
+    <color name="textColorPrimaryInverse">#FFFFFF</color>
+    <color name="overlay">#AA2C2C2C</color>
+    <color name="divider">#272727</color>
+    <color name="abba">#FFFFFF</color>
+</resources>

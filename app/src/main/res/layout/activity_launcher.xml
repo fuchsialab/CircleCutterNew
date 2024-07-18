@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Launcher">
+
+    <ImageView
+        android:layout_centerInParent="true"
+        android:background="@drawable/icon"
+        android:id="@+id/mmmmm"
+        android:layout_width="140dp"
+        android:layout_height="140dp"/>
+
+    <TextView
+        android:fontFamily="@font/bolditalic"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/mmmmm"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:textColor="#004982"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:text="❤ Circle Cutter ❤"
+        />
+
+    <TextView
+        android:fontFamily="@font/light"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:textSize="12sp"
+        android:textColor="#005EA9"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:text="❤ Made By Fuchsialab ❤"
+        />
+
+</RelativeLayout>

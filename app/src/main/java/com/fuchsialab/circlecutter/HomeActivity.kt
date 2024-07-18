@@ -47,6 +47,7 @@ class HomeActivity : AppCompatActivity() {
     var toggle: ActionBarDrawerToggle? = null
     var drawerLayout: DrawerLayout? = null
     var toolbar: Toolbar? = null
+    var toolba2r: Toolbar? = null
 
     private var backPressTime: Long = 0
 

@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.fuchsialab.circlecutter.Admob.loadInter
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -47,7 +48,6 @@ class HomeActivity : AppCompatActivity() {
     var toggle: ActionBarDrawerToggle? = null
     var drawerLayout: DrawerLayout? = null
     var toolbar: Toolbar? = null
-    var toolba2r: Toolbar? = null
 
     private var backPressTime: Long = 0
 
@@ -57,8 +57,6 @@ class HomeActivity : AppCompatActivity() {
     private var bannerid: String? = null
     private var update: String? = null
     private var mAdView: AdView? = null
-    private var mInterstitialAd: InterstitialAd? = null
-    private var interstitialId: String? = null
     private var appVersion: String? = null
 
     var button: Button? = null
@@ -142,56 +140,37 @@ class HomeActivity : AppCompatActivity() {
 
         AppRate.showRateDialogIfMeetsConditions(this)
 
-
         button = findViewById(R.id.rx_sample_button)
 
         button?.setOnClickListener(View.OnClickListener {
-            if (mInterstitialAd != null) {
-                mInterstitialAd!!.show(this@HomeActivity)
 
-                mInterstitialAd!!.setFullScreenContentCallback(object :
-                    FullScreenContentCallback() {
-                    override fun onAdDismissedFullScreenContent() {
-                        val intent = Intent(
-                            this@HomeActivity,
-                            MainActivity::class.java
-                        )
-                        startActivity(intent)
+            if (Admob.mInterstitialAd != null) {
+                Admob.mInterstitialAd!!.show(this)
+                Admob.mInterstitialAd!!.fullScreenContentCallback =
+                    object : FullScreenContentCallback() {
+                        override fun onAdDismissedFullScreenContent() {
+                            Admob.mInterstitialAd = null
+                            loadInter(this@HomeActivity)
 
-                        val adRequest = AdRequest.Builder().build()
-
-                        interstitialId?.let { it1 ->
-                            InterstitialAd.load(
+                            val intent = Intent(
                                 this@HomeActivity,
-                                it1,
-                                adRequest,
-                                object : InterstitialAdLoadCallback() {
-                                    override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                                        mInterstitialAd = interstitialAd
-                                    }
-
-                                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                                        mInterstitialAd = null
-                                        val intent = Intent(
-                                            this@HomeActivity,
-                                            MainActivity::class.java
-                                        )
-                                        startActivity(intent)
-                                    }
-                                })
+                                MainActivity::class.java
+                            )
+                            startActivity(intent)
                         }
                     }
-                })
             } else {
+                loadInter(this@HomeActivity)
+
                 val intent = Intent(
                     this@HomeActivity,
                     MainActivity::class.java
                 )
                 startActivity(intent)
-            }
-        })
 
-        // apply custom font
+            }
+
+        })
 
 
         navigationView?.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
@@ -321,14 +300,24 @@ class HomeActivity : AppCompatActivity() {
 
 
     fun bannerAds() {
+
+        bannerid = resources.getString(R.string.bannerid)
+
+        val view = findViewById<View>(R.id.adView)
+        mAdView = AdView(this@HomeActivity)
+        (view as RelativeLayout).addView(mAdView)
+        mAdView!!.adUnitId = bannerid as String
+        mAdView!!.setAdSize(AdSize.BANNER)
+        val adRequest = AdRequest.Builder().build()
+        mAdView!!.loadAd(adRequest)
+
+        //MediationTestSuite.launch(MainActivity.this);
+
         val rootref = FirebaseDatabase.getInstance().reference.child("AdUnits")
         rootref.addListenerForSingleValueEvent(object : ValueEventListener {
             @SuppressLint("MissingPermission")
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                bannerid =
-                    Objects.requireNonNull(dataSnapshot.child("banner").value).toString()
-                interstitialId =
-                    Objects.requireNonNull(dataSnapshot.child("Interstitial").value).toString()
+
                 update =
                     Objects.requireNonNull(dataSnapshot.child("Update").value).toString()
 
@@ -338,28 +327,6 @@ class HomeActivity : AppCompatActivity() {
                     }
                 }
 
-                val view = findViewById<View>(R.id.adView)
-                mAdView = AdView(this@HomeActivity)
-                (view as RelativeLayout).addView(mAdView)
-                mAdView!!.adUnitId = bannerid as String
-                mAdView!!.setAdSize(AdSize.BANNER)
-                val adRequest = AdRequest.Builder().build()
-                mAdView!!.loadAd(adRequest)
-
-                //MediationTestSuite.launch(MainActivity.this);
-                InterstitialAd.load(
-                    this@HomeActivity,
-                    interstitialId!!,
-                    adRequest,
-                    object : InterstitialAdLoadCallback() {
-                        override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                            mInterstitialAd = interstitialAd
-                        }
-
-                        override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                            mInterstitialAd = null
-                        }
-                    })
             }
 
             override fun onCancelled(databaseError: DatabaseError) {

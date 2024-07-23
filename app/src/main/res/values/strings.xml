@@ -20,4 +20,8 @@
     <string name="lkmkm">https://fuchsialabstore.blogspot.com/p/privacy-policy.html</string>
     <string name="jjjj">https://play.google.com/store/apps/details?id=com.fuchsialab.circlecutter</string>
     <string name="updateurl">https://play.google.com/store/apps/details?id=com.fuchsialab.circlecutter</string>
+
+    <string name="bannerid">ca-app-pub-8700099206862921/3519570275</string>
+    <string name="interstitialId">ca-app-pub-8700099206862921/5954161926</string>
+
 </resources>

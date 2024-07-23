@@ -42,20 +42,12 @@ class ResultImageActivity : AppCompatActivity() {
     private lateinit var imageView: ImageView
     private var imageUri: Uri? = null
 
-    var mAuth: FirebaseAuth? = null
-    var mDatabase: DatabaseReference? = null
-
     private var bannerid: String? = null
     private var mAdView: AdView? = null
-    private var mInterstitialAd: InterstitialAd? = null
-    private var interstitialId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result_image)
-
-        mAuth = FirebaseAuth.getInstance()
-        mDatabase = FirebaseDatabase.getInstance().reference
 
         bannerAds()
 
@@ -92,31 +84,20 @@ class ResultImageActivity : AppCompatActivity() {
 
     private fun showAds(){
 
-        if (mInterstitialAd != null) {
-            mInterstitialAd!!.show(this@ResultImageActivity)
 
-            mInterstitialAd!!.setFullScreenContentCallback(object :
-                FullScreenContentCallback() {
-                override fun onAdDismissedFullScreenContent() {
-                    val adRequest = AdRequest.Builder().build()
+        if (Admob.mInterstitialAd != null) {
+            Admob.mInterstitialAd!!.show(this)
+            Admob.mInterstitialAd!!.fullScreenContentCallback =
+                object : FullScreenContentCallback() {
+                    override fun onAdDismissedFullScreenContent() {
+                        Admob.mInterstitialAd = null
+                        Admob.loadInter(this@ResultImageActivity)
 
-                    interstitialId?.let {
-                        InterstitialAd.load(
-                            this@ResultImageActivity,
-                            it,
-                            adRequest,
-                            object : InterstitialAdLoadCallback() {
-                                override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                                    mInterstitialAd = interstitialAd
-                                }
-
-                                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                                    mInterstitialAd = null
-                                }
-                            })
                     }
                 }
-            })
+        } else {
+            Admob.loadInter(this@ResultImageActivity)
+
         }
 
     }
@@ -163,41 +144,16 @@ class ResultImageActivity : AppCompatActivity() {
     }
 
     fun bannerAds() {
-        val rootref = FirebaseDatabase.getInstance().reference.child("AdUnits")
-        rootref.addListenerForSingleValueEvent(object : ValueEventListener {
-            @SuppressLint("MissingPermission")
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                bannerid =
-                    Objects.requireNonNull(dataSnapshot.child("banner").value).toString()
-                interstitialId =
-                    Objects.requireNonNull(dataSnapshot.child("Interstitial").value).toString()
 
-                val view = findViewById<View>(R.id.adView)
-                mAdView = AdView(this@ResultImageActivity)
-                (view as RelativeLayout).addView(mAdView)
-                mAdView!!.setAdSize(AdSize.BANNER)
-                mAdView!!.adUnitId = bannerid as String
-                val adRequest = AdRequest.Builder().build()
-                mAdView!!.loadAd(adRequest)
+        bannerid = resources.getString(R.string.bannerid)
 
-                //MediationTestSuite.launch(MainActivity.this);
-                InterstitialAd.load(
-                    this@ResultImageActivity,
-                    interstitialId!!,
-                    adRequest,
-                    object : InterstitialAdLoadCallback() {
-                        override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                            mInterstitialAd = interstitialAd
-                        }
+        val view = findViewById<View>(R.id.adView)
+        mAdView = AdView(this@ResultImageActivity)
+        (view as RelativeLayout).addView(mAdView)
+        mAdView!!.setAdSize(AdSize.BANNER)
+        mAdView!!.adUnitId = bannerid as String
+        val adRequest = AdRequest.Builder().build()
+        mAdView!!.loadAd(adRequest)
 
-                        override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                            mInterstitialAd = null
-                        }
-                    })
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-            }
-        })
     }
 }

@@ -13,15 +13,16 @@ android {
         applicationId = "com.fuchsialab.circlecutter"
         minSdk = 23
         targetSdk = 34
-        versionCode = 44
-        versionName = "4.4"
+        versionCode = 48
+        versionName = "4.8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
